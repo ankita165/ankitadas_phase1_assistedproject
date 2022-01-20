@@ -1,5 +1,4 @@
-package accessModifiers;
-
+//method demo
 public class methodExecution {
 
 public int multipynumbers(int a,int b) {
@@ -10,7 +9,7 @@ public int multipynumbers(int a,int b) {
 public static void main(String[] args) {
 
 	methodExecution b=new methodExecution();
-	int ans= b.multipynumbers(11,5);
+	int ans= b.multipynumbers(10,3);
 	System.out.println("Multipilcation is :"+ans);
 	}
 
@@ -18,7 +17,7 @@ public static void main(String[] args) {
 //call by value
 public static class callMethod {
 
-int val=156;
+int val=150;
 
 int operation(int val) {
 	val =val*10/100;
@@ -32,4 +31,30 @@ public static void main(String args[]) {
 	System.out.println("After operation value of data is "+d.val);
 	}
 }
+
+
+
+//method overloading
+public static class overloadMethod {
+	
+public void area(int b,int h)
+    {
+         System.out.println("Area of Triangle : "+(0.5*b*h));
+    }
+    public void area(int r) 
+    {
+         System.out.println("Area of Circle : "+(3.14*r*r));
+    }
+
+    public static void main(String args[])
+   {
+
+overloadMethod ob=new overloadMethod();
+       ob.area(10,12);
+       ob.area(5);  
+   }
 }
+}
+
+
+
