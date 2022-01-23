@@ -1,4 +1,4 @@
-package Hello;
+
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -18,11 +18,11 @@ public class EmployeeRecordFileHandling {
 	        while( cont.equalsIgnoreCase("y") ) {        	
 	        	   System.out.println("\t\t Employee Information System\n\n");
 	        
-		        System.out.println("1 ===> Add New Employee Record ");
-		        System.out.println("2 ===> View All Employee Record ");	
-		        System.out.println("3 ===> Delete Employee Record ");
-		        System.out.println("4 ===> Search Specific Record ");
-		        System.out.println("5 ===> Update Specific Record ");	        
+		        System.out.println("1 ===> Add New Employee Data ");
+		        System.out.println("2 ===> View All Employee Data ");	
+		        System.out.println("3 ===> Delete Employee Data ");
+		        System.out.println("4 ===> Search Specific Data ");
+		        System.out.println("5 ===> Update Specific Data ");	        
 		    
 		        System.out.print("\n\n");
 		        System.out.println("Enter your choice: ");
@@ -137,7 +137,7 @@ public class EmployeeRecordFileHandling {
 	    		BufferedWriter bw = new BufferedWriter( new FileWriter( tempDB ) );
 	    		
 	    		
-	    		System.out.println("\t\t Delete Employee Record\n");
+	    		System.out.println("\t\t Delete Employee Data\n");
 	    		
 	    		System.out.println("Enter the Employee ID: ");
 	    		ID =  strInput.nextLine();
@@ -169,9 +169,9 @@ public class EmployeeRecordFileHandling {
 	    		String ID,record;
 	    		Scanner strInput = new Scanner(System.in);
 	    		
-	    		BufferedReader br = new BufferedReader( new FileReader("records.txt") );
+	    		BufferedReader br = new BufferedReader( new FileReader("data.txt") );
 	    		
-	    		System.out.println("\t\t Search Employee Record\n");
+	    		System.out.println("\t\t Search Employee Data\n");
 	    	
 	    		
 	    		System.out.println("Enter the Employee ID: ");
@@ -208,7 +208,7 @@ public class EmployeeRecordFileHandling {
 	    		    		
 	    		Scanner strInput = new Scanner(System.in);
 	    		
-	    		System.out.println("\t\t Update Employee Record\n\n");   
+	    		System.out.println("\t\t Update Employee Data\n\n");   
 			/**/		
 				System.out.println("Enter the Employee ID: ");
 		    		ID = strInput.nextLine();	    		
