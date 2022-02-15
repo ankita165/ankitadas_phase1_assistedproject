@@ -1,0 +1,172 @@
+
+
+Dashboard.java
+
+import java.io.IOException;
+import java.io.PrintWriter;
+
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
+@WebServlet("/dashboard")
+public class Dashboard extends HttpServlet {
+	private static final long serialVersionUID = 1L;
+
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		
+		response.setContentType("text/html");
+		PrintWriter out = response.getWriter();
+		
+		HttpSession session = request.getSession();
+		
+		if(session.getAttribute("userName") != null && (session.getAttribute("userPass") != null)) {
+			out.println("<h2> Welcome " + session.getAttribute("userName"));
+			
+			out.println("<br /> You are now Logged in </h2>");
+			
+			out.println("<h3><a href = 'logout'>Logout</a></h3>");
+		}
+		else {
+			response.sendRedirect("index.html");
+		}
+	}
+
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		
+		doGet(request, response);
+	}
+
+}
+
+Login.java
+
+import java.io.IOException;
+import java.io.PrintWriter;
+
+import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
+@WebServlet("/login")
+public class login extends HttpServlet {
+	private static final long serialVersionUID = 1L;
+
+
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		
+		response.setContentType("text/html");
+		PrintWriter out = response.getWriter();
+		
+		String username = request.getParameter("userName");
+		String userpassword = request.getParameter("userPass");
+		
+		HttpSessiontheSession = request.getSession();
+		
+		if(username.trim().equals("GuruPrasad") && (userpassword.trim().equals("1997"))) {
+			theSession.setAttribute("userName", username );
+			theSession.setAttribute("userPass", userpassword);
+			
+			response.sendRedirect("dashboard");
+		}
+		
+		else {
+			out.println("<font color = 'red'>Invalid User Name </font>");
+			RequestDispatcher dispatcher = request.getRequestDispatcher("index.html");
+			dispatcher.include(request, response);
+		}
+		
+		out.println("<a href = 'dashboard'>Next</a>");
+	}
+	
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		
+		doGet(request, response);
+	}
+
+}
+
+Logout.java
+
+import java.io.IOException;
+import java.io.PrintWriter;
+
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+@WebServlet("/logout")
+public class logout extends HttpServlet {
+	private static final long serialVersionUID = 1L;
+
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		
+		response.setContentType("text/html");
+		PrintWriter out = response.getWriter();
+		
+		request.getSession().invalidate();
+		
+		out.println("<h3> You are now Logged out <br /></h3>");
+		
+		out.println("<a href = 'index.html'>Login again</a>");
+		
+	}
+
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		
+		doGet(request, response);
+	}
+
+}
+
+Index.html
+<!DOCTYPEhtml>
+<html>
+<head>
+<metacharset="ISO-8859-1">
+<title>Validate User Login</title>
+</head>
+<body>
+
+<h1style="text-align: center;">User Login</h1>
+<hr/>
+
+<formaction="login">
+<fieldset>
+<legend>User Login Page</legend>
+<label>User Name:</label><br/>
+<inputtype="text"name="userName"placeholder="Enter User Name"/><br/><br/>
+
+<label>Password:</label><br/>
+<inputtype="Password"name="userPass"placeholder="Enter User Password"/><br/><br/>
+
+<inputtype="submit"value="Login"/>
+
+</fieldset>
+</form>
+
+</body>
+</html>
+
+Web.xml
+<?xmlversion="1.0"encoding="UTF-8"?>
+<web-appxmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"xmlns="http://java.sun.com/xml/ns/javaee"xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"id="WebApp_ID"version="3.0">
+<display-name>Loginvalidation</display-name>
+<welcome-file-list>
+<welcome-file>index.html</welcome-file>
+<welcome-file>index.htm</welcome-file>
+<welcome-file>index.jsp</welcome-file>
+<welcome-file>default.html</welcome-file>
+<welcome-file>default.htm</welcome-file>
+<welcome-file>default.jsp</welcome-file>
+</welcome-file-list>
+</web-app>
