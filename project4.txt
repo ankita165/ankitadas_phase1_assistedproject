@@ -1,0 +1,172 @@
+packagecom.model;
+
+publicclass Product {
+	privateintid;
+	private String name;
+	private String description;
+	
+	public String toString() {
+		return"Product [id=" + id + ", name=" + name + ", description=" + description + "]";
+	}
+	publicProduct() {
+		super();
+	}
+	publicProduct(intid, String name, String description) {
+		super();
+		this.id = id;
+		this.name = name;
+		this.description = description;
+	}
+	publicintgetId() {
+		returnid;
+	}
+	publicvoidsetId(intid) {
+		this.id = id;
+	}
+	public String getName() {
+		returnname;
+	}
+	publicvoidsetName(String name) {
+		this.name = name;
+	}
+	public String getDescription() {
+		returndescription;
+	}
+	publicvoidsetDescription(String description) {
+		this.description = description;
+	}
+}
+
+
+ProductRegisterationServlet.java
+package com.servlet;
+
+import java.io.IOException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
+/*@WebServlet("/ProductRegistrationServlet")*/
+public class ProductRegistrationServlet extends HttpServlet
+{
+	private static final long serialVersionUID = 1L;
+	public static final String regex = "^[1-9][0-9]*$";
+	
+	protected void doPost(HttpServletRequest request, HttpServletResponse response)throws ServletException, IOException
+	{
+		String id = request.getParameter("id");
+		String name = request.getParameter("name");
+		String description = request.getParameter("description");
+		
+		//Validate the inputs
+		if(!validID(id))
+		{
+			response.setContentType("text/html");
+			response.getWriter().println("<h4><span style='color:red'>That ID <q>" + id + "</q> does not match the numeric format or is too big.</h4>");
+			response.getWriter().println("<br><form method=\"post\" action=\"product.html\"><button type=\"submit\">Try Again</button></form>");
+		}
+		else if(name.equals(""))
+		{
+			response.setContentType("text/html");
+			response.getWriter().println("<h4><span style='color:red'>That Name <q>" + name + "</q> is invalid.</h4>");
+			response.getWriter().println("<br><form method=\"post\" action=\"product.html\"><button type=\"submit\">Try Again</button></form>");
+		}
+		else if(description.equals(""))
+		{
+			response.setContentType("text/html");
+			response.getWriter().println("<h4><span style='color:red'>That Description <q>" + description + "</q> is invalid.</h4>");
+			response.getWriter().println("<br><form method=\"post\" action=\"product.html\"><button type=\"submit\">Try Again</button></form>");
+		}
+		else
+		{
+			HttpSessionses = request.getSession();
+			ses.setAttribute("id", request.getParameter("id"));
+			ses.setAttribute("name", request.getParameter("name"));
+			ses.setAttribute("description", request.getParameter("description"));
+			response.sendRedirect("validProduct.jsp");
+			
+		}
+	}
+	
+	//Makes sure the id is a valid one
+	private static booleanvalidID(String idTest)
+	{
+		Pattern pattern = Pattern.compile(regex);
+		
+		Matcher matcher = pattern.matcher(idTest);
+		
+		if(idTest.length() > 8)
+			return false;
+		else if (matcher.matches())
+			return true;
+		else
+			return false;
+	}
+
+}
+
+Index.html
+<!DOCTYPEhtml>
+<html>
+<head>
+<metacharset="ISO-8859-1">
+<title>Insert title here</title>
+</head>
+<body>
+<formmethod="post"action="ProductRegistrationServlet">
+
+ID<inputtype="text"name="id">
+<br>
+Name<inputtype="text"name="name">
+<br>
+Description<inputtype="text"name="description">
+<br>
+<buttontype="submit">Register new product</button>
+</form>
+</body>
+</html>
+
+validProduct.jsp
+<%@pagelanguage="java"contentType="text/html; charset=ISO-8859-1"
+pageEncoding="ISO-8859-1"%>
+<!DOCTYPEhtmlPUBLIC"-//W3C//DTD HTML 4.01 Transitional//EN""http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<metahttp-equiv="Content-Type"content="text/html; charset=ISO-8859-1">
+<title>>Valid Product</title>
+</head>
+<body>
+<%=session.getAttribute("name") %> has been registered to product.ID: <%=session.getAttribute("id") %> Description: <%=session.getAttribute("description") %>
+</body>
+</head>
+</html>
+
+Web.xml
+<?xmlversion="1.0"encoding="UTF-8"?>
+<web-appxmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"xmlns="http://java.sun.com/xml/ns/javaee"xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"id="WebApp_ID"version="2.5">
+<display-name>PracticeProject4</display-name>
+<welcome-file-list>
+<welcome-file>index.html</welcome-file>
+<welcome-file>index.htm</welcome-file>
+<welcome-file>index.jsp</welcome-file>
+<welcome-file>default.html</welcome-file>
+<welcome-file>default.htm</welcome-file>
+<welcome-file>default.jsp</welcome-file>
+</welcome-file-list>
+<servlet>
+<description></description>
+<display-name>ProductRegistrationServlet</display-name>
+<servlet-name>ProductRegistrationServlet</servlet-name>
+<servlet-class>com.servlet.ProductRegistrationServlet</servlet-class>
+</servlet>
+<servlet-mapping>
+<servlet-name>ProductRegistrationServlet</servlet-name>
+<url-pattern>/ProductRegistrationServlet</url-pattern>
+</servlet-mapping>
+</web-app>
+
