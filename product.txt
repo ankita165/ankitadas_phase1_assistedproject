@@ -1,0 +1,119 @@
+1.
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven4.0.0.xsd">
+ <modelVersion>4.0.0</modelVersion>
+ <groupId>com.Project</groupId>
+ <artifactId>MyProduct</artifactId>
+ <version>0.0.1-SNAPSHOT</version>
+ <packaging>jar</packaging>
+ <name>AddNewProduct</name>
+ <url>http://maven.apache.org</url>
+ <properties>
+ <maven.compiler.source>1.11</maven.compiler.source>
+<maven.compiler.target>1.11</maven.compiler.target>
+ <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+ </properties>
+ <dependencies>
+ <dependency>
+<groupId>org.hibernate</groupId>
+<artifactId>hibernate-core</artifactId>
+<version>5.4.10.Final</version>
+</dependency>
+<dependency>
+<groupId>mysql</groupId>
+<artifactId>mysql-connector-java</artifactId>
+<version>8.0.19</version>
+</dependency>
+ </dependencies>
+</project>
+2.
+<!DOCTYPE hibernate-configuration PUBLIC
+ "-//Hibernate/Hibernate Configuration DTD 3.0//EN"
+ "http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd">
+<hibernate-configuration>
+<session-factory>
+<!-- JDBC Database connection settings -->
+<property name="connection.driver_class">com.mysql.cj.jdbc.Driver</property>
+<property name="connection.url">jdbc:mysql://localhost:3306/product</property>
+<property name="connection.username">raj2298</property>
+<property name="connection.password">1998</property>
+<!-- JDBC connection pool settings -->
+<property name="connection.pool_size">1</property>
+<!-- SQL dialect -->
+<property name="dialect">org.hibernate.dialect.MySQLDialect</property>
+<!-- Print sql to stdout -->
+<property name="show_sql">true</property>
+<property name="current_session_context_class">thread</property>
+</session-factory>
+</hibernate-configuration>
+3.
+package com.Project;
+import java.util.List;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.cfg.Configuration;
+public class App
+{
+ public static void main( String[] args )
+ {
+// Get the SessionFactory
+ SessionFactory factory = new Configuration()
+.configure("hibernate.cfg.xml")
+.addAnnotatedClass(Product.class)
+.buildSessionFactory();
+//Get the Session
+Session theSession = factory.getCurrentSession();
+try {
+// Add a new learner
+Product theproduct = new Product("powerbank",2500,2);
+// Start the transaction
+theSession.beginTransaction();
+// Save the learner
+theSession.save(theproduct);
+// Commit the transaction
+theSession.getTransaction().commit();
+}
+finally
+{
+factory.close();
+}
+ }
+}
+4.
+package com.Project;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
+@Entity
+@Table(name = "enterproduct")
+public class Product {
+@Id
+@Column(name="id")
+@GeneratedValue(strategy = GenerationType.IDENTITY)
+int id;
+@Column(name = "name")
+String name;
+@Column(name = "cost")
+int cost;
+@Column(name = "quantity")
+int quantity;
+public Product() {
+// TODO Auto-generated constructor stub
+}
+@Override
+public String toString() {
+return "Product [id=" + id + ",name=" + name + ",cost=" + cost +",quantity=" +
+quantity
++ "]";
+}
+public Product(String name, int cost,int qunatity) {
+ //this.id=id;
+this.name = name;
+this.cost = cost;
+this.quantity = qunatity;
+}
+}
