@@ -1,0 +1,201 @@
+importjava.io.IOException;
+importjava.io.InputStream;
+importjava.io.PrintWriter;
+importjava.sql.Connection;
+importjava.sql.DriverManager;
+importjava.sql.ResultSet;
+importjava.sql.SQLException;
+importjava.sql.Statement;
+importjava.util.Properties;
+importjavax.servlet.ServletException;
+importjavax.servlet.annotation.WebServlet;
+importjavax.servlet.http.HttpServlet;
+importjavax.servlet.http.HttpServletRequest;
+importjavax.servlet.http.HttpServletResponse;
+
+@WebServlet("/GetByProductId")
+publicclassGetByProductIdextendsHttpServlet {
+
+	privatestaticfinallongserialVersionUID = 1L;
+
+	/**
+	* @seeHttpServlet#HttpServlet()
+	*/
+	publicGetByProductId() {
+	super();
+	// TODO Auto-generated constructor stub
+	    }
+	
+	
+
+	/**
+	         * @seeHttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
+	         */
+	protectedvoiddoGet(HttpServletRequestrequest, HttpServletResponseresponse) throwsServletException, IOException {
+	// TODO Auto-generated method stub
+	
+	try {
+	PrintWriterout = response.getWriter();
+	out.println("<html><body>");
+	
+	InputStreamin = getServletContext().getResourceAsStream("/WEB-INF/config.properties");
+	                        Properties props = newProperties();
+	//props.load(in);
+	
+	//connection information
+	DBConnectionconn = newDBConnection("jdbc:mysql://localhost:3306/db_world", "root", "root");
+	                        Statement stmt = conn.getConnection().createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+	//  stmt.executeUpdate("insert into products (productid, price, date_added) values ('New Product', 17800.00, now())");
+	
+	//query the table and get all information
+	ResultSetrst = stmt.executeQuery("select * from products");
+	
+	//find what the user typed into the search box
+	                        String productid = request.getParameter("productid");
+	
+	//user hasn't typed anything so display table
+	if(productid == null)
+	                        {	
+		out.println("The following are the elements in the products table" + "<Br>" + "<Br>");
+		//simple while loop to print all elements in table
+		while (rst.next()) {
+		out.println("Product Id "+rst.getInt("productid") + ":	 " +" Product name : "+ rst.getString("productname") + " 	"
+		                                +" Product Price : "+ rst.getDouble("productprice") + "<Br>");
+		                        }
+	                        }
+	//user typed something
+	else
+	                        {
+		//select the row corresponding to the id number
+		String sql_res= "select * from products where productid=" + productid;
+	ResultSetinTable = stmt.executeQuery(sql_res);
+	
+	//if not empty then print all product details
+	if(inTable.next())
+		out.println("Product Id "+inTable.getInt("productid") + ":	 " +" Product name : "+ inTable.getString("productname") + "	 "
+			+" Product Price : "+ inTable.getInt("productprice") + "<Br>");
+	//empty so print error message
+	else
+		out.println("There was no element with product ID: " + productid + " found in the table, please try again");
+	
+	                        }
+		
+	stmt.close();
+	
+	
+	
+	out.println("</body></html>");
+	conn.closeConnection();
+	
+	                } catch (ClassNotFoundExceptione) {
+	e.printStackTrace();
+	                } catch (SQLExceptione) {
+	e.printStackTrace();
+	                }
+	        }
+
+	/**
+	         * @seeHttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
+	         */
+	protectedvoiddoPost(HttpServletRequestrequest, HttpServletResponseresponse) throwsServletException, IOException {
+	// TODO Auto-generated method stub
+	doGet(request, response);
+	        }
+	
+}
+
+classDBConnection {
+
+private Connection connection;
+
+publicDBConnection(String dbURL, String user, String pwd) throwsClassNotFoundException, SQLException{
+
+Class.forName("com.mysql.jdbc.Driver");
+this.connection = DriverManager.getConnection(dbURL, user, pwd);
+    }
+
+public Connection getConnection(){
+returnthis.connection;
+    }
+
+publicvoidcloseConnection() throwsSQLException {
+if (this.connection != null)
+this.connection.close();
+    }
+}
+
+	
+
+
+Products.java
+
+publicclass Products {
+
+	privateintid;
+	private String name;
+	privatedoubleprice;
+	publicintgetId() {
+		returnid;
+	}
+	publicvoidsetId(intid) {
+		this.id = id;
+	}
+	public String getName() {
+		returnname;
+	}
+	publicvoidsetName(String name) {
+		this.name = name;
+	}
+	publicdoublegetPrice() {
+		returnprice;
+	}
+	publicvoidsetPrice(doubleprice) {
+		this.price = price;
+	}
+	@Override
+	public String toString() {
+		return"Product [id=" + id + ", price=" + price + "]";
+	}
+	
+}
+
+Index.html
+<!DOCTYPEhtml>
+<html>
+<head>
+<metacharset="ISO-8859-1">
+<title>Insert title here</title>
+</head>
+<body>
+<formaction="./GetByProductId?productid=productid">
+Enter ProductId<br>
+<inputtype="text"name="productid"><br>
+<buttontype="Submit"> search
+
+</form>
+</body>
+</html>
+
+Web.xml
+<?xmlversion="1.0"encoding="UTF-8"?>
+<web-appxmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"xmlns="http://java.sun.com/xml/ns/javaee"xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"id="WebApp_ID"version="2.5">
+<display-name>PracticeProject2</display-name>
+<welcome-file-list>
+<welcome-file>index.html</welcome-file>
+<welcome-file>index.htm</welcome-file>
+<welcome-file>index.jsp</welcome-file>
+<welcome-file>default.html</welcome-file>
+<welcome-file>default.htm</welcome-file>
+<welcome-file>default.jsp</welcome-file>
+</welcome-file-list>
+<servlet>
+<description></description>
+<display-name>GetByProductId</display-name>
+<servlet-name>GetByProductId</servlet-name>
+<servlet-class>GetByProductId</servlet-class>
+</servlet>
+<servlet-mapping>
+<servlet-name>GetByProductId</servlet-name>
+<url-pattern>/GetByProductId</url-pattern>
+</servlet-mapping>
+</web-app>
